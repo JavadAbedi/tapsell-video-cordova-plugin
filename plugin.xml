@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="tapsell-video-cordova-plugin"
+    version="1.0">
+	
+    <name>Cordova Tapsell Video Plugin</name>
+    <description>Show Tapsell Video Ads</description>
+    <author>Milad Mohammadi</author>	
+    <license>miladesign.ir</license>
+    <keywords>cordova,plugin,ad,tapsell,monetisation,video</keywords>
+    <repo>https://github.com/miladesign/tapsell-video-cordova-plugin</repo>
+    <issue>https://github.com/miladesign/tapsell-video-cordova-plugin/issues</issue>	
+	<engines>
+	    <engine name="cordova" version=">=3.0.0" />
+	</engines>
+ 	
+    <js-module src="www/tapsell.js">
+        <clobbers target="window.tapsell" />
+    </js-module>    
+    
+	<!-- android -->
+	<platform name="android">
+		<config-file target="res/xml/config.xml" parent="/*">
+			<feature name="TapsellVideo">
+				<param name="android-package" value="ir.tapsell.cordova.TapsellVideo"/>
+			</feature>
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/*">
+			<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+			<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+			<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+		</config-file>
+
+		<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<activity android:name="ir.tapsell.tapsellvideosdk.VideoPage" android:screenOrientation="landscape"
+              android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+    <activity android:name="ir.tapsell.tapsellvideosdk.DirectAdMiddleActivity"
+              android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:screenOrientation="landscape"></activity>
+    <activity android:name="ir.tapsell.cordova.utils.TCActivity">
+        </activity>
+<service android:name="ir.tapsell.tapsellvideosdk.services.asynchservices.core.HttpService"></service>
+		</config-file>
+
+		<source-file src="src/android/TapsellVideo.java" target-dir="src/ir/tapsell/cordova"/>
+		<source-file src="src/android/gson-2.2.2.jar" target-dir="libs" />
+		<source-file src="src/android/universal-image-loader-1.9.1-with-sources.jar" target-dir="libs" />
+		<source-file src="src/android/tapsell-video-sdk.jar" target-dir="libs" />
+		<source-file src="src/android/TapsellCordova.jar" target-dir="libs" />
+	</platform>
+	
+</plugin>
