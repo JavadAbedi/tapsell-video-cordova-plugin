@@ -1,6 +1,6 @@
 {
   "name": "tapsell-video-cordova-plugin",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Show Tapsell Video Ads",
   "cordova": {
     "id": "tapsell-video-cordova-plugin",

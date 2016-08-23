@@ -24,6 +24,9 @@ public class TapsellVideo extends CordovaPlugin {
 	protected boolean connected;
 	protected boolean available;
 	protected int award;
+	protected boolean complete;
+	boolean checking = false;
+	boolean showing = false;
 	
 	@Override
 	public void initialize (CordovaInterface initCordova, CordovaWebView webView) {
@@ -62,21 +65,35 @@ public class TapsellVideo extends CordovaPlugin {
 		final Integer minAward = args.getInt(0);
 		final Integer videoType = args.getInt(1);
 		callbackContextKeepCallback = callbackContext;
-		TCInitiator.showAd(mActivity, minAward, videoType, new VideoListener());
+		if (showing==false) {
+			if (minAward==0) {
+				TCInitiator.showAd(mActivity, 1, videoType, new VideoListener());
+			} else {
+				TCInitiator.showAd(mActivity, minAward, videoType, new VideoListener());
+			}
+			showing = true;
+		}
+		
 	}
 	
 	class VideoListener implements TCListener {
 
 		@Override
 		public void MDVideo(Boolean isConnected, Boolean isAvailable, Integer award) {
-			
+			if (award>0) {
+				complete = true;
+			} else {
+				complete = false;
+			}
 			JSONObject result = new JSONObject();
   			try {
-				result.put("Vconnected", isConnected);
+        		result.put("Complete", complete);
 				result.put("Vavailable", isAvailable);
         		result.put("award", award);
 			} catch (JSONException e) {
+				Log.i(LOG_TAG, e.toString());
 			}
+  			showing = false;
 			PluginResult resultado = new PluginResult(PluginResult.Status.OK, result);
   			resultado.setKeepCallback(true);
   			TapsellVideo.callbackContextKeepCallback.sendPluginResult(resultado);
@@ -86,7 +103,15 @@ public class TapsellVideo extends CordovaPlugin {
 	private void checkCTA(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		final int minAward = args.getInt(0);
 		final int videoType = args.getInt(1);
-		DeveloperInterface.getInstance(mActivity).checkCtaAvailability(mActivity, minAward,videoType, new CheckCTAListener());
+		if (checking==false) {
+			if (minAward==0) {
+				DeveloperInterface.getInstance(mActivity).checkCtaAvailability(mActivity, 1,videoType, new CheckCTAListener());
+			} else {
+				DeveloperInterface.getInstance(mActivity).checkCtaAvailability(mActivity, minAward,videoType, new CheckCTAListener());
+			}
+			checking = true;
+		}
+		
 		callbackContextKeepCallback = callbackContext;
 	}
 	
@@ -96,16 +121,14 @@ public class TapsellVideo extends CordovaPlugin {
 		public void onResponse(Boolean isConnected, Boolean isAvailable) {
 			JSONObject result = new JSONObject();
   			try {
-				result.put("connected", isConnected);
 				result.put("available", isAvailable);
 				PluginResult resultado = new PluginResult(PluginResult.Status.OK, result);
 	  			resultado.setKeepCallback(true);
 	  			TapsellVideo.callbackContextKeepCallback.sendPluginResult(resultado);
 			} catch (JSONException e) {
-				PluginResult resultado = new PluginResult(PluginResult.Status.ERROR, e.toString());
-	  			resultado.setKeepCallback(true);
-	  			TapsellVideo.callbackContextKeepCallback.sendPluginResult(resultado);
+				Log.e(LOG_TAG, e.toString());
 			}
+  			checking = false;
 		}
 	}
 }
