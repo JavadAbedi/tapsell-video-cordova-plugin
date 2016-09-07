@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tapsell Video</title>
+    <script type="text/javascript" src="cordova.js"></script>
+</head>
+<style>
+        body{
+            font-size: 32px;
+        }
+    </style>
+<body>
+    <script>
+        document.addEventListener("deviceready", function () {
+			tapsell.setUp('phrjabgifrflftcqghgcktcpsjkninpebnfrjpfrajhgrjqqaljmatdeatckbgbakbqoho');
+		}, false);
+		this.video_info = {};
+		var self = this;
+		function ShowVideo(minAward,videoType) {
+            tapsell.showVideo(minAward,videoType,function (result){
+			self.video_info = { award: result["award"] };
+			if (result["Complete"]==true)
+				alert(GetVideoAward());
+			if (result["Complete"]==false)
+				alert('onNotComplete');
+			if (result["Vavailable"]==false)
+				alert('VonNotAvailable');
+			});
+        }
+		
+		function CheckCTA(minAward,videoType) {
+            tapsell.checkCTA(minAward,videoType,function (result) {
+			if (result["available"]==true)
+				alert('onAvailable');
+			if (result["available"]==false)
+				alert('onNotAvailable');
+			});
+        }
+		
+		function GetVideoAward() {
+			return this.video_info.award;
+		}
+    </script>
+
+    <!-- static interstitial, video interstial -->
+    <p><button onclick="CheckCTA(8,3);">Check CTA</button></p>
+    <p><button onclick="ShowVideo(8,3);">Show Video</button></p>
+</body>
+</html>
